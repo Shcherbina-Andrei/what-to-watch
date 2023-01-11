@@ -1,8 +1,12 @@
 import React from 'react';
+import {Helmet} from 'react-helmet-async';
 
 function FilmPage(): JSX.Element {
   return (
     <React.Fragment>
+      <Helmet>
+        <title>Movie</title>
+      </Helmet>
       <section className="film-card film-card--full">
         <div className="film-card__hero">
           <div className="film-card__bg">
