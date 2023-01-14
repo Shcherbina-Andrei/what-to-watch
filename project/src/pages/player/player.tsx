@@ -1,12 +1,26 @@
 import {Helmet} from 'react-helmet-async';
+import { useParams } from 'react-router-dom';
+import { Films } from '../../types/film';
+import NotFoundPage from '../not-found-page/not-found-page';
 
-function Player(): JSX.Element {
+type PageProps = {
+  films: Films;
+}
+
+function Player({films}: PageProps): JSX.Element {
+  const params = useParams();
+  const currentFilm = films.find((film) => film.id.toString() === params.id);
+
+  if (!currentFilm) {
+    return <NotFoundPage />;
+  }
+
   return (
     <div className="player">
       <Helmet>
         <title>Watching movie</title>
       </Helmet>
-      <video src="#" className="player__video" poster="img/player-poster.jpg"></video>
+      <video src={currentFilm.videoLink} className="player__video" poster={currentFilm.posterImage}></video>
 
       <button type="button" className="player__exit">Exit</button>
 

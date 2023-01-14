@@ -10,32 +10,35 @@ import Player from '../../pages/player/player';
 import PrivateRoute from '../private-route/private-route';
 import {AuthorizationStatus} from '../../const';
 import {HelmetProvider} from 'react-helmet-async';
+import {Films} from '../../types/film';
 
 type MainPageProps = {
   title: string;
   genre: string;
   year: number;
+  films: Films;
 }
 
-function App({title, genre, year}: MainPageProps): JSX.Element {
+function App({title, genre, year, films}: MainPageProps): JSX.Element {
   return (
     <HelmetProvider>
       <BrowserRouter>
         <Routes>
-          <Route index element={<MainPage title={title} genre={genre} year={year} />} />
+          <Route index element={<MainPage title={title} genre={genre} year={year} films={films}/>} />
           <Route path={AppRoute.Login} element={<LoginPage />} />
           <Route path={AppRoute.MyList} element={
-            <PrivateRoute authorizationStatus={AuthorizationStatus.NoAuth} >
-              <MyListPage />
+            <PrivateRoute authorizationStatus={AuthorizationStatus.Auth} >
+              <MyListPage films={films}/>
             </PrivateRoute>
           }
           />
           <Route path={AppRoute.Films}>
-            <Route path={AppRoute.Film} element={<FilmPage />} >
-              <Route path={AppRoute.AddReview} element={<AddReviewPage />} />
+            <Route path={AppRoute.Film} >
+              <Route index element={<FilmPage films={films}/>} />
+              <Route path={AppRoute.AddReview} element={<AddReviewPage films={films} />} />
             </Route>
           </Route>
-          <Route path={AppRoute.Player} element={<Player />} />
+          <Route path={AppRoute.Player} element={<Player films={films}/>} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

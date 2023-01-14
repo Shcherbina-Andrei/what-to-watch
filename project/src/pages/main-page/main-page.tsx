@@ -1,15 +1,17 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import FilmCard from '../../components/film-card/film-card';
+import FilmsList from '../../components/films-list/films-list';
 import Logo from '../../components/logo/logo';
+import {Films} from '../../types/film';
 
 type MainPageProps = {
   title: string;
   genre: string;
   year: number;
+  films: Films;
 }
 
-function MainPage({title, genre, year}: MainPageProps): JSX.Element {
+function MainPage({title, genre, year, films}: MainPageProps): JSX.Element {
   return (
     <React.Fragment>
       <Helmet>
@@ -107,39 +109,7 @@ function MainPage({title, genre, year}: MainPageProps): JSX.Element {
             </li>
           </ul>
 
-          <div className="catalog__films-list">
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-
-            <FilmCard />
-          </div>
+          <FilmsList films={films}/>
 
           <div className="catalog__more">
             <button className="catalog__button" type="button">Show more</button>
