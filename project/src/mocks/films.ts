@@ -35,7 +35,7 @@ export const films: Films = [
     scoresCount: 9,
     director: 'Taylor Sheridan',
     starring: ['Jeremy Renner', 'Elizabeth Olsen '],
-    runTime: 121,
+    runTime: 110,
     genre: 'thriller',
     released: 2017,
     isFavorite: false
