@@ -1,17 +1,36 @@
 import React from 'react';
+import {useState} from 'react';
 import { Helmet } from 'react-helmet-async';
 import FilmsList from '../../components/films-list/films-list';
+import GenresList from '../../components/genres-list/genres-list';
 import Logo from '../../components/logo/logo';
-import {Films} from '../../types/film';
+import MoreFilmButton from '../../components/more-film-button/more-film-button';
+import {useAppDispatch} from '../../hooks';
+import {useAppSelector} from '../../hooks';
+import {getFilmsByGenre} from '../../utils/filter-related-films';
+import {changeGenreAction} from '../../store/action';
 
-type MainPageProps = {
-  title: string;
-  genre: string;
-  year: number;
-  films: Films;
-}
+const MaxFilms = 8;
 
-function MainPage({title, genre, year, films}: MainPageProps): JSX.Element {
+function MainPage(): JSX.Element {
+
+  const currentFilm = useAppSelector((state) => state.currentFilm);
+  const currentGenre = useAppSelector((state) => state.genre);
+  const [displayedFilms, setDisplayedFilms] = useState(MaxFilms);
+
+  const dispatch = useAppDispatch();
+  const films = useAppSelector((state) => state.films);
+  const currentFilms = getFilmsByGenre(films, currentGenre);
+
+  const handleShowMoreFilms = () => {
+    setDisplayedFilms(Math.min(currentFilms.length, displayedFilms + MaxFilms));
+  };
+
+  const handleChangeGenre = (genre: string) => {
+    setDisplayedFilms(Math.min(currentFilms.length, MaxFilms));
+    dispatch(changeGenreAction({genre}));
+  };
+
   return (
     <React.Fragment>
       <Helmet>
@@ -19,7 +38,7 @@ function MainPage({title, genre, year, films}: MainPageProps): JSX.Element {
       </Helmet>
       <section className="film-card">
         <div className="film-card__bg">
-          <img src="img/bg-the-grand-budapest-hotel.jpg" alt="The Grand Budapest Hotel" />
+          <img src={`${currentFilm.backgroundImage}`} alt={`${currentFilm.name}`} />
         </div>
 
         <h1 className="visually-hidden">WTW</h1>
@@ -42,14 +61,14 @@ function MainPage({title, genre, year, films}: MainPageProps): JSX.Element {
         <div className="film-card__wrap">
           <div className="film-card__info">
             <div className="film-card__poster">
-              <img src="img/the-grand-budapest-hotel-poster.jpg" alt="The Grand Budapest Hotel poster" width="218" height="327" />
+              <img src={`${currentFilm.posterImage}`} alt={`${currentFilm.name} poster`} width="218" height="327" />
             </div>
 
             <div className="film-card__desc">
-              <h2 className="film-card__title">{title}</h2>
+              <h2 className="film-card__title">{currentFilm.name}</h2>
               <p className="film-card__meta">
-                <span className="film-card__genre">{genre}</span>
-                <span className="film-card__year">{year}</span>
+                <span className="film-card__genre">{currentFilm.genre}</span>
+                <span className="film-card__year">{currentFilm.released}</span>
               </p>
 
               <div className="film-card__buttons">
@@ -76,44 +95,11 @@ function MainPage({title, genre, year, films}: MainPageProps): JSX.Element {
         <section className="catalog">
           <h2 className="catalog__title visually-hidden">Catalog</h2>
 
-          <ul className="catalog__genres-list">
-            <li className="catalog__genres-item catalog__genres-item--active">
-              <a href="/" className="catalog__genres-link">All genres</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Comedies</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Crime</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Documentary</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Dramas</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/"className="catalog__genres-link">Horror</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Kids & Family</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Romance</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Sci-Fi</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Thrillers</a>
-            </li>
-          </ul>
+          <GenresList films={films} handleChangeGenre={handleChangeGenre}/>
 
-          <FilmsList films={films}/>
+          <FilmsList films={currentFilms.slice(0, displayedFilms)}/>
 
-          <div className="catalog__more">
-            <button className="catalog__button" type="button">Show more</button>
-          </div>
+          {currentFilms.length > displayedFilms && <MoreFilmButton handleShowMoreFilms={handleShowMoreFilms}/>}
         </section>
 
         <footer className="page-footer">
