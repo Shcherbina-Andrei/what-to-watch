@@ -10,21 +10,16 @@ import Player from '../../pages/player/player';
 import PrivateRoute from '../private-route/private-route';
 import {AuthorizationStatus} from '../../const';
 import {HelmetProvider} from 'react-helmet-async';
-import {Films} from '../../types/film';
+import { useAppSelector } from '../../hooks';
 
-type MainPageProps = {
-  title: string;
-  genre: string;
-  year: number;
-  films: Films;
-}
+function App(): JSX.Element {
+  const films = useAppSelector((state) => state.films);
 
-function App({title, genre, year, films}: MainPageProps): JSX.Element {
   return (
     <HelmetProvider>
       <BrowserRouter>
         <Routes>
-          <Route index element={<MainPage title={title} genre={genre} year={year} films={films}/>} />
+          <Route index element={<MainPage />} />
           <Route path={AppRoute.Login} element={<LoginPage />} />
           <Route path={AppRoute.MyList} element={
             <PrivateRoute authorizationStatus={AuthorizationStatus.Auth} >

@@ -1,13 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
 import App from './components/app/app';
-import {films} from './mocks/films';
-
-const film = {
-  title: 'Sicario',
-  genre: 'thriller',
-  year: 2015
-};
+import {store} from './store';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -15,6 +10,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <App title={film.title} genre={film.genre} year={film.year} films={films}/>
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
 );
