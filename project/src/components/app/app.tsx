@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
 import {AppRoute} from '../../const';
 import AddReviewPage from '../../pages/add-review-page/add-review-page';
 import LoginPage from '../../pages/login-page/login-page';
@@ -10,33 +10,45 @@ import Player from '../../pages/player/player';
 import PrivateRoute from '../private-route/private-route';
 import {AuthorizationStatus} from '../../const';
 import {HelmetProvider} from 'react-helmet-async';
-import { useAppSelector } from '../../hooks';
+import {useAppSelector } from '../../hooks';
+import LoadingScreen from '../loading-screen/loading-screen';
+import ScrollToTop from '../scroll-to-top/scroll-to-top';
+import browserHistory from '../../browser-history';
+import HistoryRouter from '../history-router/history-router';
 
 function App(): JSX.Element {
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const films = useAppSelector((state) => state.films);
+  const isFilmsDataLoading = useAppSelector((state) => state.isFilmsDataLoading);
+
+  if (authorizationStatus === AuthorizationStatus.Unknown || isFilmsDataLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <HelmetProvider>
-      <BrowserRouter>
+      <HistoryRouter history={browserHistory}>
+        <ScrollToTop />
         <Routes>
           <Route index element={<MainPage />} />
           <Route path={AppRoute.Login} element={<LoginPage />} />
-          <Route path={AppRoute.MyList} element={
-            <PrivateRoute authorizationStatus={AuthorizationStatus.Auth} >
-              <MyListPage films={films}/>
-            </PrivateRoute>
-          }
+          <Route path={AppRoute.MyList}
+            element={
+              <PrivateRoute authorizationStatus={authorizationStatus} >
+                <MyListPage films={films}/>
+              </PrivateRoute>
+            }
           />
           <Route path={AppRoute.Films}>
             <Route path={AppRoute.Film} >
-              <Route index element={<FilmPage films={films}/>} />
+              <Route index element={<FilmPage />} />
               <Route path={AppRoute.AddReview} element={<AddReviewPage films={films} />} />
             </Route>
           </Route>
           <Route path={AppRoute.Player} element={<Player films={films}/>} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path={AppRoute.NotFound} element={<NotFoundPage />} />
         </Routes>
-      </BrowserRouter>
+      </HistoryRouter>
     </HelmetProvider>
   );
 }

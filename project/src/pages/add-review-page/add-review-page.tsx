@@ -2,6 +2,7 @@ import {Helmet} from 'react-helmet-async';
 import {Link, useParams} from 'react-router-dom';
 import AddReviewForm from '../../components/add-review-form/add-review-form';
 import Logo from '../../components/logo/logo';
+import UserBlock from '../../components/user-block/user-block';
 import {Films} from '../../types/film';
 import NotFoundPage from '../not-found-page/not-found-page';
 
@@ -36,21 +37,12 @@ function AddReviewPage({films}: PageProps): JSX.Element {
                 <Link to={`/films/${currentFilm.id}`} className="breadcrumbs__link">{currentFilm.name}</Link>
               </li>
               <li className="breadcrumbs__item">
-                <a className="breadcrumbs__link">Add review</a>
+                <Link to="" className="breadcrumbs__link">Add review</Link>
               </li>
             </ul>
           </nav>
 
-          <ul className="user-block">
-            <li className="user-block__item">
-              <div className="user-block__avatar">
-                <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-              </div>
-            </li>
-            <li className="user-block__item">
-              <a className="user-block__link">Sign out</a>
-            </li>
-          </ul>
+          <UserBlock />
         </header>
 
         <div className="film-card__poster film-card__poster--small">
@@ -58,7 +50,7 @@ function AddReviewPage({films}: PageProps): JSX.Element {
         </div>
       </div>
 
-      <AddReviewForm />
+      <AddReviewForm currentId={currentFilm.id}/>
 
     </section>
   );
