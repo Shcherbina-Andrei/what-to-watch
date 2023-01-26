@@ -35,7 +35,7 @@ function VideoPlayer({film, isPlaying}: PageProps): JSX.Element {
   });
 
   return (
-    <video src="https://cdn.coverr.co/videos/coverr-man-making-a-snowman-227/1080p.mp4" className="player__video" poster={film.posterImage} ref={videoRef} muted>
+    <video src={film.previewVideoLink} className="player__video" poster={film.posterImage} ref={videoRef} muted>
     </video>
   );
 }

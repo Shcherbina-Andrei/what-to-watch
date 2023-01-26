@@ -1,27 +1,42 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Helmet} from 'react-helmet-async';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import FilmTabs from '../../components/film-tabs/film-tabs';
 import FilmsList from '../../components/films-list/films-list';
-import Logo from '../../components/logo/logo';
-import {Films} from '../../types/film';
-import { filterRelatedFilms } from '../../utils/filter-related-films';
-import NotFoundPage from '../not-found-page/not-found-page';
+import Header from '../../components/header/header';
+import LoadingScreen from '../../components/loading-screen/loading-screen';
+import { AppRoute, AuthorizationStatus } from '../../const';
+import {useAppSelector} from '../../hooks';
+import {store} from '../../store';
+import {fetchCommentsAction, fetchCurrentFilmAction, fetchSimilarFilms} from '../../store/api-actions';
 
-type PageProps = {
-  films: Films;
-}
 
-function FilmPage({films}: PageProps): JSX.Element {
+function FilmPage(): JSX.Element {
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const params = useParams();
-  const currentFilm = films.find((film) => film.id.toString() === params.id);
+  useEffect(() => {
+    store.dispatch(fetchCurrentFilmAction(Number(params.id)));
+    store.dispatch(fetchSimilarFilms(Number(params.id)));
+    store.dispatch(fetchCommentsAction(Number(params.id)));
+  }, [params.id]);
+
   const navigate = useNavigate();
+
+  const currentFilm = useAppSelector((state) => state.currentFilm);
+  const similarFilms = useAppSelector((state) => state.similarFilms);
+
   if (!currentFilm) {
-    return <NotFoundPage />;
+    return <LoadingScreen />;
   }
 
   const handlePlayerButton = (): void => {
     navigate(`/player/${currentFilm.id}`);
+  };
+
+  const handleAddMyList = (): void => {
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      navigate(AppRoute.Login);
+    }
   };
 
   return (
@@ -37,20 +52,7 @@ function FilmPage({films}: PageProps): JSX.Element {
 
           <h1 className="visually-hidden">WTW</h1>
 
-          <header className="page-header film-card__head">
-            <Logo />
-
-            <ul className="user-block">
-              <li className="user-block__item">
-                <div className="user-block__avatar">
-                  <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-                </div>
-              </li>
-              <li className="user-block__item">
-                <a className="user-block__link">Sign out</a>
-              </li>
-            </ul>
-          </header>
+          <Header />
 
           <div className="film-card__wrap">
             <div className="film-card__desc">
@@ -67,14 +69,14 @@ function FilmPage({films}: PageProps): JSX.Element {
                   </svg>
                   <span>Play</span>
                 </button>
-                <button className="btn btn--list film-card__button" type="button">
+                <button className="btn btn--list film-card__button" type="button" onClick={handleAddMyList}>
                   <svg viewBox="0 0 19 20" width="19" height="20">
                     <use xlinkHref="#add"></use>
                   </svg>
                   <span>My list</span>
                   <span className="film-card__count">9</span>
                 </button>
-                <Link to={'review'} className="btn film-card__button">Add review</Link>
+                {(authorizationStatus === AuthorizationStatus.Auth) && <Link to="review" className="btn film-card__button">Add review</Link>}
               </div>
             </div>
           </div>
@@ -94,8 +96,7 @@ function FilmPage({films}: PageProps): JSX.Element {
       <div className="page-content">
         <section className="catalog catalog--like-this">
           <h2 className="catalog__title">More like this</h2>
-
-          <FilmsList films={filterRelatedFilms(currentFilm, films)} />
+          <FilmsList films={similarFilms} />
         </section>
 
         <footer className="page-footer">

@@ -22,7 +22,7 @@ function FilmTabs({currentFilm}: PageProps): JSX.Element {
       descriptionElement = <FilmDetails currentFilm={currentFilm} />;
       break;
     case Tabs.Reviews:
-      descriptionElement = <FilmReviews currentFilm={currentFilm} />;
+      descriptionElement = <FilmReviews />;
       break;
     default:
       descriptionElement = <FilmOverview currentFilm={currentFilm} />;
