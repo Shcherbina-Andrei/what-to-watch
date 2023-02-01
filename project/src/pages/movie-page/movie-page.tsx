@@ -1,29 +1,43 @@
 import React, { useEffect } from 'react';
 import {Helmet} from 'react-helmet-async';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import AddFavoriteFilmButton from '../../components/add-favorite-film-button/add-favorite-film-button';
 import FilmTabs from '../../components/film-tabs/film-tabs';
 import FilmsList from '../../components/films-list/films-list';
+import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
 import LoadingScreen from '../../components/loading-screen/loading-screen';
-import { AppRoute, AuthorizationStatus } from '../../const';
-import {useAppSelector} from '../../hooks';
-import {store} from '../../store';
-import {fetchCommentsAction, fetchCurrentFilmAction, fetchSimilarFilms} from '../../store/api-actions';
+import {AuthorizationStatus } from '../../const';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {fetchCommentsAction, fetchCurrentFilmAction, fetchSimilarFilms, fetchFavoriteFilms, fetchAddFavoriteFilm} from '../../store/api-actions';
+import { getCurrentFilm, getSimilarFilms } from '../../store/films-data/selectors';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
 
 
 function FilmPage(): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const params = useParams();
+
+  const currentFilm = useAppSelector(getCurrentFilm);
+  const similarFilms = useAppSelector(getSimilarFilms);
+
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
-    store.dispatch(fetchCurrentFilmAction(Number(params.id)));
-    store.dispatch(fetchSimilarFilms(Number(params.id)));
-    store.dispatch(fetchCommentsAction(Number(params.id)));
-  }, [params.id]);
+    dispatch(fetchCurrentFilmAction(Number(params.id)));
+    dispatch(fetchSimilarFilms(Number(params.id)));
+    dispatch(fetchCommentsAction(Number(params.id)));
+  }, [params.id, dispatch]);
+
+  const addOrRemoveFavoriteFilm = () => {
+    if (currentFilm) {
+      dispatch(fetchAddFavoriteFilm(currentFilm));
+      dispatch(fetchCurrentFilmAction(currentFilm.id));
+      dispatch(fetchFavoriteFilms());
+    }
+  };
 
   const navigate = useNavigate();
-
-  const currentFilm = useAppSelector((state) => state.currentFilm);
-  const similarFilms = useAppSelector((state) => state.similarFilms);
 
   if (!currentFilm) {
     return <LoadingScreen />;
@@ -31,12 +45,6 @@ function FilmPage(): JSX.Element {
 
   const handlePlayerButton = (): void => {
     navigate(`/player/${currentFilm.id}`);
-  };
-
-  const handleAddMyList = (): void => {
-    if (authorizationStatus !== AuthorizationStatus.Auth) {
-      navigate(AppRoute.Login);
-    }
   };
 
   return (
@@ -69,13 +77,7 @@ function FilmPage(): JSX.Element {
                   </svg>
                   <span>Play</span>
                 </button>
-                <button className="btn btn--list film-card__button" type="button" onClick={handleAddMyList}>
-                  <svg viewBox="0 0 19 20" width="19" height="20">
-                    <use xlinkHref="#add"></use>
-                  </svg>
-                  <span>My list</span>
-                  <span className="film-card__count">9</span>
-                </button>
+                <AddFavoriteFilmButton film={currentFilm} addOrRemoveFavoriteFilm={addOrRemoveFavoriteFilm}/>
                 {(authorizationStatus === AuthorizationStatus.Auth) && <Link to="review" className="btn film-card__button">Add review</Link>}
               </div>
             </div>
@@ -99,19 +101,7 @@ function FilmPage(): JSX.Element {
           <FilmsList films={similarFilms} />
         </section>
 
-        <footer className="page-footer">
-          <div className="logo">
-            <a href="main.html" className="logo__link logo__link--light">
-              <span className="logo__letter logo__letter--1">W</span>
-              <span className="logo__letter logo__letter--2">T</span>
-              <span className="logo__letter logo__letter--3">W</span>
-            </a>
-          </div>
-
-          <div className="copyright">
-            <p>© 2019 What to watch Ltd.</p>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </React.Fragment>
   );

@@ -1,12 +1,15 @@
+import { memo } from 'react';
 import {Link} from 'react-router-dom';
 import {AppRoute, AuthorizationStatus} from '../../const';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import { logoutAction } from '../../store/api-actions';
+import { getAvatarUrl } from '../../store/app-process/selectors';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
 
 function UserBlock(): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const dispatch = useAppDispatch();
-  const avatarUrl = useAppSelector((state) => state.userAvatarUrl);
+  const avatarUrl = useAppSelector(getAvatarUrl);
 
   const logoutHandle = () => {
     dispatch(logoutAction());
@@ -36,5 +39,5 @@ function UserBlock(): JSX.Element {
   );
 }
 
-export default UserBlock;
+export default memo(UserBlock);
 

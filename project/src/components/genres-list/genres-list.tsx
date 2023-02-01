@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
 import {useAppSelector} from '../../hooks';
+import { getGenre } from '../../store/app-process/selectors';
 import {Films} from '../../types/film';
+import './genres-list.css';
 
 type PageProps = {
   films: Films;
@@ -8,7 +9,7 @@ type PageProps = {
 }
 
 function GenresList({films, handleChangeGenre}: PageProps): JSX.Element {
-  const currentGenre = useAppSelector((state) => state.genre);
+  const currentGenre = useAppSelector(getGenre);
 
   const genres = new Set<string>();
   genres.add('All genres');
@@ -18,7 +19,7 @@ function GenresList({films, handleChangeGenre}: PageProps): JSX.Element {
     <ul className="catalog__genres-list">
       {Array.from(genres).map((genre) => (
         <li className={`catalog__genres-item ${genre === currentGenre ? 'catalog__genres-item--active' : ''}`} key={genre}>
-          <Link to="" className="catalog__genres-link" onClick={() => handleChangeGenre(genre)}>{genre}</Link>
+          <button className="catalog__genres-link catalog__genres-link--button" onClick={() => handleChangeGenre(genre)}>{genre}</button>
         </li>
       ))}
     </ul>

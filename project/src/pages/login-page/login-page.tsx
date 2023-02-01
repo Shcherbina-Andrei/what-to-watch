@@ -3,21 +3,23 @@ import { Helmet } from 'react-helmet-async';
 import Logo from '../../components/logo/logo';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {Navigate} from 'react-router-dom';
-import {loginAction} from '../../store/api-actions';
+import {checkAuthAction, loginAction} from '../../store/api-actions';
 import {AuthData} from '../../types/auth-data';
 import {AppRoute, AuthorizationStatus } from '../../const';
 import {toast} from 'react-toastify';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
 
 function LoginPage(): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
 
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
   const dispatch = useAppDispatch();
 
-  const onSubmitHandle = (authData: AuthData) => {
-    dispatch(loginAction(authData));
+  const onSubmitHandle = async (authData: AuthData) => {
+    await dispatch(loginAction(authData));
+    await dispatch(checkAuthAction());
   };
 
   if (authorizationStatus === AuthorizationStatus.Auth) {

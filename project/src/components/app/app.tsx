@@ -15,11 +15,13 @@ import LoadingScreen from '../loading-screen/loading-screen';
 import ScrollToTop from '../scroll-to-top/scroll-to-top';
 import browserHistory from '../../browser-history';
 import HistoryRouter from '../history-router/history-router';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { getFilmsDataLoadingStatus } from '../../store/films-data/selectors';
 
 function App(): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const films = useAppSelector((state) => state.films);
-  const isFilmsDataLoading = useAppSelector((state) => state.isFilmsDataLoading);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const isFilmsDataLoading = useAppSelector(getFilmsDataLoadingStatus);
+
 
   if (authorizationStatus === AuthorizationStatus.Unknown || isFilmsDataLoading) {
     return <LoadingScreen />;
@@ -35,17 +37,17 @@ function App(): JSX.Element {
           <Route path={AppRoute.MyList}
             element={
               <PrivateRoute authorizationStatus={authorizationStatus} >
-                <MyListPage films={films}/>
+                <MyListPage />
               </PrivateRoute>
             }
           />
           <Route path={AppRoute.Films}>
             <Route path={AppRoute.Film} >
               <Route index element={<FilmPage />} />
-              <Route path={AppRoute.AddReview} element={<AddReviewPage films={films} />} />
+              <Route path={AppRoute.AddReview} element={<AddReviewPage />} />
             </Route>
           </Route>
-          <Route path={AppRoute.Player} element={<Player films={films}/>} />
+          <Route path={AppRoute.Player} element={<Player />} />
           <Route path={AppRoute.NotFound} element={<NotFoundPage />} />
         </Routes>
       </HistoryRouter>

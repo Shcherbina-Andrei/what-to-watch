@@ -1,12 +1,32 @@
+import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/header';
-import {useAppSelector} from '../../hooks';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {getPromoFilm } from '../../store/films-data/selectors';
+import {fetchFavoriteFilms, fetchAddFavoriteFilm, fetchPromoFilmAction} from '../../store/api-actions';
+import AddFavoriteFilmButton from '../add-favorite-film-button/add-favorite-film-button';
 
 function PromoHeader(): JSX.Element {
-  const promoFilm = useAppSelector((state) => state.promoFilm);
+  const promoFilm = useAppSelector(getPromoFilm);
+  const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
 
   if (!promoFilm) {
     return <Header />;
   }
+
+  const handlePlayerButton = (): void => {
+    navigate(`/player/${promoFilm.id}`);
+  };
+
+  const addOrRemoveFavoriteFilm = () => {
+    if (promoFilm) {
+      dispatch(fetchAddFavoriteFilm(promoFilm));
+      dispatch(fetchPromoFilmAction());
+      dispatch(fetchFavoriteFilms());
+    }
+  };
+
 
   return (
     <section className="film-card">
@@ -32,19 +52,13 @@ function PromoHeader(): JSX.Element {
             </p>
 
             <div className="film-card__buttons">
-              <button className="btn btn--play film-card__button" type="button">
+              <button className="btn btn--play film-card__button" type="button" onClick={handlePlayerButton}>
                 <svg viewBox="0 0 19 19" width="19" height="19">
                   <use xlinkHref="#play-s"></use>
                 </svg>
                 <span>Play</span>
               </button>
-              <button className="btn btn--list film-card__button" type="button">
-                <svg viewBox="0 0 19 20" width="19" height="20">
-                  <use xlinkHref="#add"></use>
-                </svg>
-                <span>My list</span>
-                <span className="film-card__count">9</span>
-              </button>
+              <AddFavoriteFilmButton film={promoFilm} addOrRemoveFavoriteFilm={addOrRemoveFavoriteFilm} />
             </div>
           </div>
         </div>
