@@ -2,14 +2,11 @@ import {Helmet} from 'react-helmet-async';
 import FilmsList from '../../components/films-list/films-list';
 import Logo from '../../components/logo/logo';
 import UserBlock from '../../components/user-block/user-block';
-import { Films } from '../../types/film';
+import { useAppSelector } from '../../hooks';
+import { getFavoriteFilms} from '../../store/films-data/selectors';
 
-type PageProps = {
-  films: Films;
-}
-
-function MyListPage({films}: PageProps): JSX.Element {
-  const favoriteFilms = films.filter((film) => film.isFavorite);
+function MyListPage(): JSX.Element {
+  const favoriteFilms = useAppSelector(getFavoriteFilms);
   return (
     <div className="user-page">
       <Helmet>
@@ -20,7 +17,7 @@ function MyListPage({films}: PageProps): JSX.Element {
           <Logo />
         </div>
 
-        <h1 className="page-title user-page__title">My list <span className="user-page__film-count">9</span></h1>
+        <h1 className="page-title user-page__title">My list <span className="user-page__film-count">{favoriteFilms.length}</span></h1>
         <UserBlock />
       </header>
 

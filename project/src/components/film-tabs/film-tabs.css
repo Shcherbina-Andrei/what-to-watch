@@ -1,0 +1,7 @@
+.film-nav__link--button {
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+}

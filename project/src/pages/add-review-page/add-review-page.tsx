@@ -3,15 +3,13 @@ import {Link, useParams} from 'react-router-dom';
 import AddReviewForm from '../../components/add-review-form/add-review-form';
 import Logo from '../../components/logo/logo';
 import UserBlock from '../../components/user-block/user-block';
-import {Films} from '../../types/film';
+import { useAppSelector } from '../../hooks';
+import { getFilms } from '../../store/films-data/selectors';
 import NotFoundPage from '../not-found-page/not-found-page';
 
-type PageProps = {
-  films: Films;
-}
-
-function AddReviewPage({films}: PageProps): JSX.Element {
+function AddReviewPage(): JSX.Element {
   const params = useParams();
+  const films = useAppSelector(getFilms);
   const currentFilm = films.find((film) => film.id.toString() === params.id);
   if (!currentFilm) {
     return <NotFoundPage />;
