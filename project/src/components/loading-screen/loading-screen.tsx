@@ -11,6 +11,7 @@ function LoadingScreen(): JSX.Element {
           <circle cx="100" cy="100" r="18" id="green"/>
         </svg>
       </div>
+      <span className="visually-hidden">Loading...</span>
     </div>
   );
 }

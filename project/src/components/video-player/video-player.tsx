@@ -35,7 +35,7 @@ function VideoPlayer({film, isPlaying}: PageProps): JSX.Element {
   });
 
   return (
-    <video src={film.previewVideoLink} className="player__video" poster={film.posterImage} ref={videoRef} muted>
+    <video src={film.previewVideoLink} className="player__video" poster={film.posterImage} ref={videoRef} muted data-testid="video-player">
     </video>
   );
 }

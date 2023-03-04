@@ -7,6 +7,7 @@ function Logo(): JSX.Element {
         <span className="logo__letter logo__letter--1">W</span>
         <span className="logo__letter logo__letter--2">T</span>
         <span className="logo__letter logo__letter--3">W</span>
+        <span className="visually-hidden">What to watch</span>
       </Link>
     </div>
   );
