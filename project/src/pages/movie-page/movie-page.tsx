@@ -10,7 +10,7 @@ import LoadingScreen from '../../components/loading-screen/loading-screen';
 import {AuthorizationStatus } from '../../const';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {fetchCommentsAction, fetchCurrentFilmAction, fetchSimilarFilms, fetchFavoriteFilms, fetchAddFavoriteFilm} from '../../store/api-actions';
-import { getCurrentFilm, getSimilarFilms } from '../../store/films-data/selectors';
+import {getCurrentFilm, getSimilarFilms, getFilmsDataLoadingStatus} from '../../store/films-data/selectors';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
 
 
@@ -20,6 +20,8 @@ function FilmPage(): JSX.Element {
 
   const currentFilm = useAppSelector(getCurrentFilm);
   const similarFilms = useAppSelector(getSimilarFilms);
+
+  const loadingStatus = useAppSelector(getFilmsDataLoadingStatus);
 
   const dispatch = useAppDispatch();
 
@@ -39,7 +41,7 @@ function FilmPage(): JSX.Element {
 
   const navigate = useNavigate();
 
-  if (!currentFilm) {
+  if (!currentFilm || loadingStatus) {
     return <LoadingScreen />;
   }
 

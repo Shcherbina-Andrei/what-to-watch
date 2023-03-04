@@ -38,9 +38,14 @@ export const filmsData = createSlice({
         state.promoFilm = null;
       })
       .addCase(fetchCurrentFilmAction.fulfilled, (state, action) => {
+        state.isFilmsDataLoading = false;
         state.currentFilm = action.payload;
       })
+      .addCase(fetchCurrentFilmAction.pending, (state) => {
+        state.isFilmsDataLoading = true;
+      })
       .addCase(fetchCurrentFilmAction.rejected, (state) => {
+        state.isFilmsDataLoading = false;
         state.currentFilm = null;
       })
       .addCase(fetchSimilarFilms.fulfilled, (state, action) => {
