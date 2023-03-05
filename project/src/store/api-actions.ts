@@ -11,13 +11,12 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 import { Comments } from '../types/comment';
 
 export const fetchFilmsAction = createAsyncThunk<Films, undefined, {
-  dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }
 >(
   'data/fetchFilms',
-  async (_arg, {dispatch, extra: api}) => {
+  async (_arg, {extra: api}) => {
     const {data} = await api.get<Films>(APIRoutes.Films);
     return data;
   }
@@ -42,65 +41,60 @@ export const fetchCurrentFilmAction = createAsyncThunk<Film | null, number, {
 );
 
 export const fetchSimilarFilms = createAsyncThunk<Films, number, {
-  dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }
 >(
   'data/fetchSimilarFilms',
-  async (id, {dispatch, extra: api}) => {
+  async (id, {extra: api}) => {
     const {data} = await api.get<Films>(`${APIRoutes.Films}/${id}/similar`);
     return data;
   }
 );
 
 export const fetchPromoFilmAction = createAsyncThunk<Film | null, undefined, {
-  dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }
 >(
   'data/fetchPromoFilm',
-  async (_arg, {dispatch, extra: api}) => {
+  async (_arg, {extra: api}) => {
     const {data} = await api.get<Film>('/promo');
     return data;
   }
 );
 
 export const fetchFavoriteFilms = createAsyncThunk<Films, undefined, {
-  dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }
 >(
   'data/fetchFavoriteFilm',
-  async (_arg, {dispatch, extra: api}) => {
+  async (_arg, {extra: api}) => {
     const {data} = await api.get<Films>('/favorite');
     return data;
   }
 );
 
 export const fetchAddFavoriteFilm = createAsyncThunk<void, Film, {
-  dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }
 >(
   'data/fetchAddFavoriteFilm',
-  async (film, {dispatch, extra: api}) => {
+  async (film, {extra: api}) => {
     const filmParam = !film.isFavorite ? 1 : 0;
     await api.post(`/favorite/${film.id}/${String(filmParam)}`);
   }
 );
 
 export const fetchCommentsAction = createAsyncThunk<Comments, number, {
-  dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }
 >(
   'data/fetchComments',
-  async (id, {dispatch, extra: api}) => {
+  async (id, {extra: api}) => {
     const {data} = await api.get<Comments>(`/comments/${id}`);
     return data;
   }
@@ -138,13 +132,12 @@ export const checkAuthAction = createAsyncThunk<void, undefined, {
 );
 
 export const loginAction = createAsyncThunk<void, AuthData, {
-  dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }
 >(
   'user/login',
-  async ({login: email, password}, {dispatch, extra: api}) => {
+  async ({login: email, password}, {extra: api}) => {
     const {data: {token}} = await api.post<UserData>(APIRoutes.Login, {email, password});
     saveToken(token);
   },
