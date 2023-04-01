@@ -4,4 +4,4 @@
 
 Стек технологий: React, Typescript, Redux, Redux Toolkit, Axios.
 
-https://cozy-tarsier-7b8961.netlify.app/
+Deploy: https://cozy-tarsier-7b8961.netlify.app/
