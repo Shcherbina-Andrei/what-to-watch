@@ -3,6 +3,6 @@
 Онлайн-кинотеатр с возможностью смотреть фильмы в любимых жанрах.
 Для авторизованных пользователей есть возможности добавлять фильмы в избранное и оставлять рецензии.
 
-Стек технологий: React, Typescript, Redux, Redux Toolkit, Axios.
+**Стек технологий**: React, Typescript, Redux, Redux Toolkit, Axios.
 
 Ознакомьтесь с deploy-версией: https://cozy-tarsier-7b8961.netlify.app/
