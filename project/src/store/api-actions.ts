@@ -48,7 +48,7 @@ export const fetchSimilarFilms = createAsyncThunk<Films, number, {
   'data/fetchSimilarFilms',
   async (id, {extra: api}) => {
     const {data} = await api.get<Films>(`${APIRoutes.Films}/${id}/similar`);
-    return data;
+    return data.filter((film) => film.id !== id);
   }
 );
 
